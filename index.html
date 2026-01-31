@@ -188,6 +188,22 @@
         </div>
 
         <div class="input-group">
+            <label>Số điện thoại</label>
+            <div class="input-wrapper">
+                <input type="text" id="phoneInput" readonly placeholder="Số sẽ được tạo tự động">
+                <button class="btn-generate" onclick="getOTP()">Get OTP</button>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>SMS Code</label>
+            <div class="input-wrapper">
+                <input type="text" id="smsCodeInput" readonly placeholder="Code SMS sẽ được lấy tự động">
+                <button class="btn-get-code" onclick="checkSMS()">Check SMS</button>
+            </div>
+        </div>
+
+        <div class="input-group">
             <label>Email khôi phục (mailkp)</label>
             <div class="input-wrapper">
                 <input type="text" id="mailkpInput" readonly placeholder="Email sẽ được tạo tự động">
@@ -206,6 +222,8 @@
     </div>
 
     <script>
+        let currentOrderId = null; // Lưu order ID khi get OTP
+        
         // Auto copy khi click vào input có dữ liệu
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('click', function() {
@@ -278,6 +296,68 @@
             const password = generateRandomPassword();
             document.getElementById('passwordInput').value = password;
             showStatus('✅ Đã tạo password: ' + password, 'success');
+        }
+
+        async function getOTP() {
+            showStatus('Đang thuê số điện thoại...', 'info');
+
+            try {
+                const response = await fetch('https://gmailios.vn/api/order-sms/5/ry2UdAjPuYKOqFJIB/viettel', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const phoneNumber = result.data.phone_number;
+                    currentOrderId = result.data.id; // Lưu ID để check SMS sau
+                    
+                    document.getElementById('phoneInput').value = phoneNumber;
+                    showStatus(`✅ Đã thuê số: ${phoneNumber}`, 'success');
+                } else {
+                    showStatus('❌ Không thể thuê số điện thoại', 'error');
+                }
+            } catch (error) {
+                showStatus('❌ Lỗi khi thuê số: ' + error.message, 'error');
+            }
+        }
+
+        async function checkSMS() {
+            if (!currentOrderId) {
+                showStatus('Vui lòng Get OTP trước', 'error');
+                return;
+            }
+
+            showStatus('Đang kiểm tra SMS...', 'info');
+
+            try {
+                const response = await fetch(`https://gmailios.vn/api/check-order/${currentOrderId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const codeOtp = result.data.code_otp;
+                    
+                    if (codeOtp && codeOtp !== '') {
+                        document.getElementById('smsCodeInput').value = codeOtp;
+                        showStatus(`✅ Đã nhận được SMS Code: ${codeOtp}`, 'success');
+                    } else {
+                        showStatus('⚠️ Chưa nhận được SMS. Thử lại sau...', 'error');
+                    }
+                } else {
+                    showStatus('❌ Không thể kiểm tra SMS', 'error');
+                }
+            } catch (error) {
+                showStatus('❌ Lỗi khi check SMS: ' + error.message, 'error');
+            }
         }
 
         async function generateEmail() {
