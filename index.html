@@ -250,22 +250,24 @@
         }
 
         function generateRandomName() {
-            const firstNames = ['nguyen', 'tran', 'le', 'pham', 'hoang', 'vo', 'dang', 'bui', 'duong', 'ngo', 'ly', 'vuong', 'trinh'];
-            const lastNames = ['van', 'thi', 'duc', 'minh', 'hoang', 'kim', 'thanh', 'quoc', 'anh', 'tuan', 'hong', 'huong'];
-            const suffixes = ['dj', 'pro', 'vip', 'official', 'real', 'kp', 'bat', 'dev', 'main', 'acc'];
+            const firstNames = ['nguyen', 'tran', 'le', 'pham', 'hoang', 'vo', 'dang', 'bui', 'duong', 'ngo', 'ly', 'vuong', 'trinh', 'dao', 'mai', 'ta', 'ha'];
+            const middleNames = ['van', 'thi', 'duc', 'minh', 'hoang', 'kim', 'thanh', 'quoc', 'anh', 'tuan', 'hong', 'huong', 'duy', 'thang', 'hai', 'long'];
+            const lastNames = ['hung', 'linh', 'hoa', 'lan', 'son', 'nga', 'thu', 'binh', 'phuong', 'hieu', 'khoa', 'phong', 'dung', 'quan'];
+            const suffixes = ['dj', 'pro', 'vip', 'official', 'real', 'kp', 'bat', 'dev', 'main', 'acc', 'haka', 'kaxi', 'boss', 'king', 'tech', 'cute', 'love'];
             
             const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const middleName = middleNames[Math.floor(Math.random() * middleNames.length)];
             const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
             const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
-            const randomNum = Math.floor(Math.random() * 9999);
+            const randomNum = Math.floor(Math.random() * 90000) + 10000; // 5 chữ số: 10000-99999
             
-            // Random format
+            // Random format - tất cả đều dài
             const formats = [
-                `${firstName}${lastName}.${suffix}`,
-                `${firstName}.${lastName}${randomNum}`,
-                `${lastName}${firstName}.${suffix}`,
-                `${firstName}${lastName}${suffix}${randomNum}`,
-                `${firstName}.${suffix}${randomNum}`
+                `${firstName}${middleName}${lastName}.${suffix}${randomNum}`,
+                `${lastName}${firstName}${middleName}.${suffix}${randomNum}`,
+                `${firstName}${lastName}${middleName}${suffix}${randomNum}`,
+                `${middleName}${firstName}${lastName}.${suffix}${randomNum}`,
+                `${firstName}.${middleName}${lastName}${suffix}${randomNum}`
             ];
             
             return formats[Math.floor(Math.random() * formats.length)];
