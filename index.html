@@ -174,15 +174,20 @@
         <div class="input-group">
             <label>Email gốc</label>
             <div class="input-wrapper">
-                <input type="text" id="emailInput" placeholder="Để trống sẽ tự tạo email">
+                <input type="text" id="emailInput" readonly placeholder="Để trống sẽ tự tạo email">
                 <button class="btn-generate" onclick="generateEmail()">Generate</button>
             </div>
         </div>
 
         <div class="input-group">
+            <label>Username (không có @gmail.com)</label>
+            <input type="text" id="usernameInput" readonly placeholder="Username sẽ được tạo tự động">
+        </div>
+
+        <div class="input-group">
             <label>Password</label>
             <div class="input-wrapper">
-                <input type="text" id="passwordInput" placeholder="Nhập password hoặc Generate">
+                <input type="text" id="passwordInput" readonly placeholder="Nhập password hoặc Generate">
                 <button class="btn-generate" onclick="generatePassword()">Generate</button>
             </div>
         </div>
@@ -373,6 +378,9 @@
 
             // Lấy phần trước @gmail.com
             const username = emailInput.split('@gmail.com')[0];
+            
+            // Điền vào input username
+            document.getElementById('usernameInput').value = username;
             
             // Tạo random 6 ký tự
             const randomStr = generateRandomString(6);
