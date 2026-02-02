@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verification Tool</title>
+    <title>Email by Thien</title>
     <style>
         * {
             margin: 0;
@@ -250,24 +250,37 @@
         }
 
         function generateRandomName() {
-            const firstNames = ['nguyen', 'tran', 'le', 'pham', 'hoang', 'vo', 'dang', 'bui', 'duong', 'ngo', 'ly', 'vuong', 'trinh', 'dao', 'mai', 'ta', 'ha'];
-            const middleNames = ['van', 'thi', 'duc', 'minh', 'hoang', 'kim', 'thanh', 'quoc', 'anh', 'tuan', 'hong', 'huong', 'duy', 'thang', 'hai', 'long'];
-            const lastNames = ['hung', 'linh', 'hoa', 'lan', 'son', 'nga', 'thu', 'binh', 'phuong', 'hieu', 'khoa', 'phong', 'dung', 'quan'];
-            const suffixes = ['dj', 'pro', 'vip', 'official', 'real', 'kp', 'bat', 'dev', 'main', 'acc', 'haka', 'kaxi', 'boss', 'king', 'tech', 'cute', 'love'];
+            const firstNames = ['nguyen', 'tran', 'le', 'pham', 'hoang', 'vo', 'dang', 'bui', 'duong', 'ngo', 'ly', 'vuong', 'trinh', 'dao', 'mai', 'ta', 'ha', 'do', 'dinh', 'phan', 'cao'];
+            const middleNames = ['van', 'thi', 'duc', 'minh', 'hoang', 'kim', 'thanh', 'quoc', 'anh', 'tuan', 'hong', 'huong', 'duy', 'thang', 'hai', 'long', 'ngoc', 'xuan', 'thu', 'phuoc', 'huu', 'trung'];
+            const lastNames = ['hung', 'linh', 'hoa', 'lan', 'son', 'nga', 'thu', 'binh', 'phuong', 'hieu', 'khoa', 'phong', 'dung', 'quan', 'tuan', 'tai', 'nam', 'nhi', 'tam', 'tu', 'nhat', 'hai'];
+            const suffixes = ['dj', 'pro', 'vip', 'official', 'real', 'kp', 'bat', 'dev', 'main', 'acc', 'haka', 'kaxi', 'boss', 'king', 'tech', 'cute', 'love', 'gaming', 'music', 'art', 'cool', 'super', 'mega', 'ultra', 'top', 'best', 'star'];
+            const connectors = ['x', 'z', 'v', 'k', 'the', 'mr', 'ms', 'dr', 'sir'];
             
             const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
             const middleName = middleNames[Math.floor(Math.random() * middleNames.length)];
             const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
             const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+            const connector = connectors[Math.floor(Math.random() * connectors.length)];
             const randomNum = Math.floor(Math.random() * 90000) + 10000; // 5 chữ số: 10000-99999
+            const shortNum = Math.floor(Math.random() * 9000) + 1000; // 4 chữ số: 1000-9999
             
-            // Random format - tất cả đều dài
+            // Random format - ĐA DẠNG hơn và KHÔNG có dấu chấm
             const formats = [
-                `${firstName}${middleName}${lastName}.${suffix}${randomNum}`,
-                `${lastName}${firstName}${middleName}.${suffix}${randomNum}`,
+                `${firstName}${middleName}${lastName}${suffix}${randomNum}`,
+                `${lastName}${firstName}${middleName}${suffix}${randomNum}`,
                 `${firstName}${lastName}${middleName}${suffix}${randomNum}`,
-                `${middleName}${firstName}${lastName}.${suffix}${randomNum}`,
-                `${firstName}.${middleName}${lastName}${suffix}${randomNum}`
+                `${middleName}${firstName}${lastName}${suffix}${randomNum}`,
+                `${firstName}${middleName}${suffix}${lastName}${randomNum}`,
+                `${suffix}${firstName}${middleName}${lastName}${randomNum}`,
+                `${firstName}${connector}${lastName}${suffix}${randomNum}`,
+                `${lastName}${connector}${firstName}${suffix}${randomNum}`,
+                `${firstName}${lastName}${randomNum}${suffix}`,
+                `${suffix}${randomNum}${firstName}${lastName}`,
+                `${firstName}${middleName}${randomNum}`,
+                `${lastName}${firstName}${shortNum}${suffix}`,
+                `${connector}${firstName}${lastName}${suffix}${randomNum}`,
+                `${firstName}${suffix}${middleName}${lastName}${randomNum}`,
+                `${lastName}${suffix}${firstName}${randomNum}`
             ];
             
             return formats[Math.floor(Math.random() * formats.length)];
