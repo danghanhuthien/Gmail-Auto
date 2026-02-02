@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Email</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        .btn-back {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-refresh {
+            background: #48bb78;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-refresh:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .data-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .data-count {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Mobile Card Layout */
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .email-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+
+        .email-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .card-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .card-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-trail {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .badge-no-trail {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .card-row {
+            display: flex;
+            margin-bottom: 8px;
+            align-items: flex-start;
+        }
+
+        .card-label {
+            font-weight: 600;
+            color: #666;
+            min-width: 80px;
+            font-size: 13px;
+        }
+
+        .card-value {
+            color: #333;
+            flex: 1;
+            word-break: break-all;
+            font-size: 14px;
+        }
+
+        .card-email {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 16px;
+        }
+
+        .error {
+            text-align: center;
+            padding: 60px 20px;
+            color: #f56565;
+            font-size: 16px;
+        }
+
+        /* Desktop Table Layout */
+        @media (min-width: 768px) {
+            .card-list {
+                display: none;
+            }
+
+            .table-wrapper {
+                display: block;
+                overflow-x: auto;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            table th {
+                background: #667eea;
+                color: white;
+                padding: 12px;
+                text-align: left;
+                font-weight: 600;
+                position: sticky;
+                top: 0;
+            }
+
+            table td {
+                padding: 12px;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            table tr:hover {
+                background: #f7fafc;
+            }
+
+            table tr:nth-child(even) {
+                background: #f9f9f9;
+            }
+
+            .badge-trail, .badge-no-trail {
+                display: inline-block;
+            }
+        }
+
+        /* Mobile: Hide table */
+        @media (max-width: 767px) {
+            .table-wrapper {
+                display: none;
+            }
+
+            .card-list {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📧 Danh sách Email</h1>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-refresh" onclick="loadData()">🔄 Refresh</button>
+                <a href="email-verification.html" class="btn-back">← Quay lại</a>
+            </div>
+        </div>
+
+        <div class="data-info">
+            <div class="data-count" id="dataCount">Đang tải...</div>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="card-list" id="cardList">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <div>Đang tải dữ liệu...</div>
+            </div>
+        </div>
+
+        <!-- Desktop Table View -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Trail</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="5" class="loading">
+                            <div class="loading-spinner"></div>
+                            <div>Đang tải dữ liệu...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Auto load data when page loads
+        window.onload = function() {
+            loadData();
+        };
+
+        async function loadData() {
+            const cardList = document.getElementById('cardList');
+            const tableBody = document.getElementById('tableBody');
+            const dataCount = document.getElementById('dataCount');
+            
+            // Show loading
+            cardList.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div>Đang tải dữ liệu...</div></div>';
+            tableBody.innerHTML = '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>Đang tải dữ liệu...</div></td></tr>';
+            dataCount.textContent = 'Đang tải...';
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbytvG-tfmicCmWLLt6hBH5gh7D-k_zWLeQLZl2TQ1D7VDoDaFWMBVtzrl6gfekiXhr7/exec', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success' && result.data && result.data.length > 0) {
+                    dataCount.textContent = `Tổng số: ${result.total} bản ghi`;
+                    
+                    // Build mobile cards
+                    let cardHtml = '';
+                    result.data.forEach((item, index) => {
+                        const trailClass = item.trail === 'Có Trail' ? 'badge-trail' : 'badge-no-trail';
+                        cardHtml += `
+                            <div class="email-card">
+                                <div class="card-header">
+                                    <span class="card-number">#${index + 1}</span>
+                                    <span class="card-badge ${trailClass}">${item.trail || '-'}</span>
+                                </div>
+                                <div class="card-row">
+                                    <span class="card-label">📧 Email:</span>
+                                    <span class="card-value card-email">${item.email || '-'}</span>
+                                </div>
+                                <div class="card-row">
+                                    <span class="card-label">📱 Phone:</span>
+                                    <span class="card-value">${item.phone || '-'}</span>
+                                </div>
+                                <div class="card-row">
+                                    <span class="card-label">📅 Created:</span>
+                                    <span class="card-value">${item.created_at || '-'}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    cardList.innerHTML = cardHtml;
+                    
+                    // Build desktop table
+                    let tableHtml = '';
+                    result.data.forEach((item, index) => {
+                        const trailClass = item.trail === 'Có Trail' ? 'badge-trail' : 'badge-no-trail';
+                        tableHtml += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${item.email || '-'}</td>
+                                <td>${item.phone || '-'}</td>
+                                <td><span class="card-badge ${trailClass}">${item.trail || '-'}</span></td>
+                                <td>${item.created_at || '-'}</td>
+                            </tr>
+                        `;
+                    });
+                    tableBody.innerHTML = tableHtml;
+                } else {
+                    cardList.innerHTML = '<div class="no-data">Không có dữ liệu</div>';
+                    tableBody.innerHTML = '<tr><td colspan="5" class="no-data">Không có dữ liệu</td></tr>';
+                    dataCount.textContent = 'Tổng số: 0 bản ghi';
+                }
+
+            } catch (error) {
+                cardList.innerHTML = `<div class="error">❌ Lỗi: ${error.message}</div>`;
+                tableBody.innerHTML = `<tr><td colspan="5" class="error">❌ Lỗi: ${error.message}</td></tr>`;
+                dataCount.textContent = 'Lỗi tải dữ liệu';
+            }
+        }
+    </script>
+</body>
+</html>
