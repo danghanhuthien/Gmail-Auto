@@ -369,7 +369,7 @@
         let emailData = [];
         const API_KEY = "ad3c7977268e5c3c15479427e5df01c0";
         
-        // Google Apps Script Proxy URL
+        // Google Apps Script Proxy URL - ĐÃ CẬP NHẬT
         const PROXY_URL = "https://script.google.com/macros/s/AKfycbwxeMIfJJoRtEw8Hxd_QRhVlMD2YC074XcbgAEk58DdqVwGJQuMGcDArlEvXIp4-V2zsQ/exec";
 
         // Auto load data when page loads
@@ -526,12 +526,6 @@
                 return;
             }
 
-            // Kiểm tra proxy URL đã được cấu hình chưa
-            if (PROXY_URL.includes('YOUR_SCRIPT_ID')) {
-                alert('⚠️ Bạn cần cấu hình PROXY_URL trong code!\n\nVui lòng xem file SETUP.md để biết cách setup Google Apps Script proxy.');
-                return;
-            }
-
             const btnCheckLive = document.getElementById('btnCheckLive');
             const checkStatus = document.getElementById('checkStatus');
             
@@ -550,6 +544,9 @@
             }
             
             let totalChecked = 0;
+            let totalLive = 0;
+            let totalDie = 0;
+            let totalVerifyPhone = 0;
             
             try {
                 for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
@@ -576,7 +573,12 @@
                         })
                     });
                     
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
                     const result = await response.json();
+                    console.log('API Response:', result);
                     
                     if (result.status && result.data) {
                         // Cập nhật status cho từng email
@@ -585,10 +587,17 @@
                             if (item) {
                                 item.liveStatus = emailResult.status;
                                 totalChecked++;
+                                
+                                // Đếm theo status
+                                if (emailResult.status === 'live') totalLive++;
+                                else if (emailResult.status === 'die') totalDie++;
+                                else if (emailResult.status === 'verify_phone') totalVerifyPhone++;
                             }
                         });
                         
                         renderEmailList();
+                    } else {
+                        throw new Error(result.message || 'API trả về lỗi');
                     }
                     
                     // Delay 1s giữa các batch để tránh rate limit
@@ -597,13 +606,13 @@
                     }
                 }
                 
-                checkStatus.textContent = `✅ Hoàn thành! Đã check ${totalChecked}/${emails.length} emails`;
-                alert(`Check xong! ${totalChecked} emails đã được kiểm tra.`);
+                checkStatus.textContent = `✅ Hoàn thành! Live: ${totalLive} | Die: ${totalDie} | Verify: ${totalVerifyPhone}`;
+                alert(`Check xong!\n\n✅ Live: ${totalLive}\n❌ Die: ${totalDie}\n📱 Verify Phone: ${totalVerifyPhone}\n\nTổng: ${totalChecked}/${emails.length}`);
                 
             } catch (error) {
                 console.error('Error checking emails:', error);
                 checkStatus.textContent = `❌ Lỗi: ${error.message}`;
-                alert('Có lỗi xảy ra khi check email: ' + error.message);
+                alert('Có lỗi xảy ra khi check email:\n\n' + error.message + '\n\nVui lòng kiểm tra:\n1. Google Apps Script đã deploy đúng chưa?\n2. Code proxy đã cập nhật chưa?\n3. Xem Console (F12) để biết thêm chi tiết');
             } finally {
                 btnCheckLive.disabled = false;
                 btnCheckLive.textContent = '🔍 Check Live';
