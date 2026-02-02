@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Proxy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test CheckMail Proxy</h1>
+    
+    <h3>Bước 1: Test GET (Kiểm tra proxy có hoạt động không)</h3>
+    <button onclick="testGet()">Test GET Request</button>
+    <div id="getResult" class="result"></div>
+    
+    <h3>Bước 2: Test POST (Kiểm tra check email)</h3>
+    <button onclick="testPost()">Test POST Request (1 email)</button>
+    <div id="postResult" class="result"></div>
+
+    <script>
+        const PROXY_URL = "https://script.google.com/macros/s/AKfycbwxeMIfJJoRtEw8Hxd_QRhVlMD2YC074XcbgAEk58DdqVwGJQuMGcDArlEvXIp4-V2zsQ/exec";
+        const API_KEY = "ad3c7977268e5c3c15479427e5df01c0";
+
+        async function testGet() {
+            const resultDiv = document.getElementById('getResult');
+            resultDiv.innerHTML = '⏳ Đang test GET request...';
+            
+            try {
+                const response = await fetch(PROXY_URL, {
+                    method: 'GET'
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">✅ SUCCESS!</div>\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ ERROR:</div>\n${error.message}\n\n${error.stack}`;
+            }
+        }
+
+        async function testPost() {
+            const resultDiv = document.getElementById('postResult');
+            resultDiv.innerHTML = '⏳ Đang test POST request với 1 email...';
+            
+            try {
+                const response = await fetch(PROXY_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        api_key: API_KEY,
+                        emails: ["test@gmail.com"]
+                    })
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">✅ SUCCESS!</div>\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ ERROR:</div>\n${error.message}\n\n${error.stack}`;
+            }
+        }
+    </script>
+</body>
+</html>
