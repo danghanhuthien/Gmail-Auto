@@ -368,7 +368,9 @@
     <script>
         let emailData = [];
         const API_KEY = "ad3c7977268e5c3c15479427e5df01c0";
-        const CHECK_API_URL = "https://checkmail.live/check/";
+        
+        // Google Apps Script Proxy URL
+        const PROXY_URL = "https://script.google.com/macros/s/AKfycbwxeMIfJJoRtEw8Hxd_QRhVlMD2YC074XcbgAEk58DdqVwGJQuMGcDArlEvXIp4-V2zsQ/exec";
 
         // Auto load data when page loads
         window.onload = function() {
@@ -524,6 +526,12 @@
                 return;
             }
 
+            // Kiểm tra proxy URL đã được cấu hình chưa
+            if (PROXY_URL.includes('YOUR_SCRIPT_ID')) {
+                alert('⚠️ Bạn cần cấu hình PROXY_URL trong code!\n\nVui lòng xem file SETUP.md để biết cách setup Google Apps Script proxy.');
+                return;
+            }
+
             const btnCheckLive = document.getElementById('btnCheckLive');
             const checkStatus = document.getElementById('checkStatus');
             
@@ -556,8 +564,8 @@
                     });
                     renderEmailList();
                     
-                    // Call API
-                    const response = await fetch(CHECK_API_URL, {
+                    // Call API thông qua proxy
+                    const response = await fetch(PROXY_URL, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
