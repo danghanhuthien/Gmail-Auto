@@ -330,14 +330,35 @@
             dataCount.textContent = 'Đang tải...';
 
             try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbytvG-tfmicCmWLLt6hBH5gh7D-k_zWLeQLZl2TQ1D7VDoDaFWMBVtzrl6gfekiXhr7/exec', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                // Dùng script tag để bypass CORS
+                const scriptUrl = 'https://script.google.com/macros/s/AKfycbytvG-tfmicCmWLLt6hBH5gh7D-k_zWLeQLZl2TQ1D7VDoDaFWMBVtzrl6gfekiXhr7/exec';
+                
+                // Tạo promise để đợi callback
+                const result = await new Promise((resolve, reject) => {
+                    const callbackName = 'jsonpCallback_' + Date.now();
+                    window[callbackName] = function(data) {
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        resolve(data);
+                    };
+                    
+                    const script = document.createElement('script');
+                    script.src = scriptUrl + '?callback=' + callbackName;
+                    script.onerror = () => {
+                        delete window[callbackName];
+                        reject(new Error('Failed to load data'));
+                    };
+                    document.body.appendChild(script);
+                    
+                    // Timeout sau 10s
+                    setTimeout(() => {
+                        if (window[callbackName]) {
+                            delete window[callbackName];
+                            document.body.removeChild(script);
+                            reject(new Error('Request timeout'));
+                        }
+                    }, 10000);
                 });
-
-                const result = await response.json();
 
                 if (result.status === 'success' && result.data && result.data.length > 0) {
                     dataCount.textContent = `Tổng số: ${result.total} bản ghi`;
