@@ -5,14 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách Email</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
@@ -22,9 +18,9 @@
             background: white;
             border-radius: 20px;
             padding: 20px;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         .header {
@@ -36,45 +32,33 @@
             gap: 10px;
         }
 
-        h1 {
-            color: #667eea;
-            font-size: 24px;
-        }
+        h1 { color: #667eea; font-size: 24px; }
 
-        .btn-back {
-            background: #667eea;
-            color: white;
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        button, .btn-back {
             padding: 10px 20px;
             border: none;
             border-radius: 10px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s;
             text-decoration: none;
-            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .btn-back:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
+        .btn-back { background: #667eea; color: white; }
+        .btn-back:hover { background: #5568d3; transform: translateY(-2px); }
 
-        .btn-refresh {
-            background: #48bb78;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+        .btn-refresh { background: #48bb78; color: white; }
+        .btn-refresh:hover { background: #38a169; transform: translateY(-2px); }
 
-        .btn-refresh:hover {
-            background: #38a169;
-            transform: translateY(-2px);
-        }
+        .btn-checklive { background: #ed8936; color: white; }
+        .btn-checklive:hover { background: #dd6b20; transform: translateY(-2px); }
+        .btn-checklive:disabled { background: #cbd5e0; cursor: not-allowed; transform: none; }
 
         .data-info {
             display: flex;
@@ -88,18 +72,38 @@
             gap: 10px;
         }
 
-        .data-count {
-            color: #667eea;
+        .data-count { color: #667eea; font-weight: 600; font-size: 16px; }
+
+        .check-progress {
+            display: none;
+            padding: 10px 15px;
+            background: #fff8e1;
+            border: 2px solid #f6c90e;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #744210;
             font-weight: 600;
-            font-size: 16px;
         }
 
-        /* Mobile Card Layout */
-        .card-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        /* Status badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
         }
+        .badge-trail    { background: #c6f6d5; color: #22543d; }
+        .badge-no-trail { background: #fed7d7; color: #742a2a; }
+        .badge-live     { background: #c6f6d5; color: #22543d; }
+        .badge-die      { background: #fed7d7; color: #742a2a; }
+        .badge-verify   { background: #feebc8; color: #744210; }
+        .badge-unknown  { background: #e2e8f0; color: #4a5568; }
+        .badge-checking { background: #bee3f8; color: #2c5282; }
+
+        /* ---- MOBILE CARDS ---- */
+        .card-list { display: flex; flex-direction: column; gap: 15px; }
 
         .email-card {
             background: white;
@@ -108,11 +112,7 @@
             padding: 15px;
             transition: all 0.3s;
         }
-
-        .email-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-        }
+        .email-card:hover { border-color: #667eea; box-shadow: 0 4px 12px rgba(102,126,234,0.15); }
 
         .card-header {
             display: flex;
@@ -121,6 +121,8 @@
             margin-bottom: 12px;
             padding-bottom: 10px;
             border-bottom: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 6px;
         }
 
         .card-number {
@@ -132,47 +134,10 @@
             font-size: 14px;
         }
 
-        .card-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .badge-trail {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-
-        .badge-no-trail {
-            background: #fed7d7;
-            color: #742a2a;
-        }
-
-        .card-row {
-            display: flex;
-            margin-bottom: 8px;
-            align-items: flex-start;
-        }
-
-        .card-label {
-            font-weight: 600;
-            color: #666;
-            min-width: 80px;
-            font-size: 13px;
-        }
-
-        .card-value {
-            color: #333;
-            flex: 1;
-            word-break: break-all;
-            font-size: 14px;
-        }
-
-        .card-email {
-            color: #667eea;
-            font-weight: 500;
-        }
+        .card-row { display: flex; margin-bottom: 8px; align-items: flex-start; }
+        .card-label { font-weight: 600; color: #666; min-width: 80px; font-size: 13px; }
+        .card-value { color: #333; flex: 1; word-break: break-all; font-size: 14px; }
+        .card-email { color: #667eea; font-weight: 500; }
 
         .loading {
             text-align: center;
@@ -180,243 +145,303 @@
             color: #667eea;
             font-size: 16px;
         }
-
         .loading-spinner {
             display: inline-block;
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             border: 4px solid #f3f3f3;
             border-top: 4px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 15px;
         }
+        @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .no-data  { text-align: center; padding: 60px 20px; color: #999; font-size: 16px; }
+        .error    { text-align: center; padding: 60px 20px; color: #f56565; font-size: 16px; }
 
-        .no-data {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-            font-size: 16px;
-        }
-
-        .error {
-            text-align: center;
-            padding: 60px 20px;
-            color: #f56565;
-            font-size: 16px;
-        }
-
-        /* Desktop Table Layout */
+        /* ---- DESKTOP TABLE ---- */
         @media (min-width: 768px) {
-            .card-list {
-                display: none;
-            }
+            .card-list { display: none; }
+            .table-wrapper { display: block; overflow-x: auto; }
 
-            .table-wrapper {
-                display: block;
-                overflow-x: auto;
-            }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
+            table { width: 100%; border-collapse: collapse; }
             table th {
-                background: #667eea;
-                color: white;
-                padding: 12px;
-                text-align: left;
-                font-weight: 600;
-                position: sticky;
-                top: 0;
+                background: #667eea; color: white;
+                padding: 12px; text-align: left;
+                font-weight: 600; white-space: nowrap;
             }
-
-            table td {
-                padding: 12px;
-                border-bottom: 1px solid #e0e0e0;
-            }
-
-            table tr:hover {
-                background: #f7fafc;
-            }
-
-            table tr:nth-child(even) {
-                background: #f9f9f9;
-            }
-
-            .badge-trail, .badge-no-trail {
-                display: inline-block;
-            }
+            table td { padding: 12px; border-bottom: 1px solid #e0e0e0; font-size: 13px; word-break: break-all; }
+            table tr:hover { background: #f7fafc; }
+            table tr:nth-child(even) { background: #f9f9f9; }
         }
 
-        /* Mobile: Hide table */
         @media (max-width: 767px) {
-            .table-wrapper {
-                display: none;
-            }
-
-            .card-list {
-                display: flex;
-            }
+            .table-wrapper { display: none; }
+            .card-list { display: flex; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📧 Danh sách Email</h1>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-refresh" onclick="loadData()">🔄 Refresh</button>
-                <a href="index.html" class="btn-back">← Quay lại</a>
-            </div>
-        </div>
-
-        <div class="data-info">
-            <div class="data-count" id="dataCount">Đang tải...</div>
-        </div>
-
-        <!-- Mobile Card View -->
-        <div class="card-list" id="cardList">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <div>Đang tải dữ liệu...</div>
-            </div>
-        </div>
-
-        <!-- Desktop Table View -->
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Trail</th>
-                        <th>Created At</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr>
-                        <td colspan="5" class="loading">
-                            <div class="loading-spinner"></div>
-                            <div>Đang tải dữ liệu...</div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+<div class="container">
+    <div class="header">
+        <h1>📧 Danh sách Email</h1>
+        <div class="btn-group">
+            <button class="btn-checklive" id="btnCheckLive" onclick="checkLive()">⚡ Check Live</button>
+            <button class="btn-refresh" onclick="loadData()">🔄 Refresh</button>
+            <a href="index.html" class="btn-back">← Quay lại</a>
         </div>
     </div>
 
-    <script>
-        // Auto load data when page loads
-        window.onload = function() {
-            loadData();
-        };
+    <div class="data-info">
+        <div class="data-count" id="dataCount">Đang tải...</div>
+        <div id="liveStats" style="font-size:13px;display:none;">
+            <span style="color:#22543d;font-weight:700;" id="statLive">✅ Live: 0</span>
+            &nbsp;|&nbsp;
+            <span style="color:#742a2a;font-weight:700;" id="statDie">❌ Die: 0</span>
+            &nbsp;|&nbsp;
+            <span style="color:#744210;font-weight:700;" id="statOther">⚠️ Khác: 0</span>
+        </div>
+    </div>
 
-        async function loadData() {
-            const cardList = document.getElementById('cardList');
-            const tableBody = document.getElementById('tableBody');
-            const dataCount = document.getElementById('dataCount');
-            
-            // Show loading
-            cardList.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div>Đang tải dữ liệu...</div></div>';
-            tableBody.innerHTML = '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>Đang tải dữ liệu...</div></td></tr>';
-            dataCount.textContent = 'Đang tải...';
+    <div class="check-progress" id="checkProgress">⏳ Đang check live...</div>
+
+    <!-- Mobile -->
+    <div class="card-list" id="cardList">
+        <div class="loading"><div class="loading-spinner"></div><div>Đang tải dữ liệu...</div></div>
+    </div>
+
+    <!-- Desktop -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>2FA</th>
+                    <th>Trail</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr><td colspan="7" class="loading"><div class="loading-spinner"></div><div>Đang tải dữ liệu...</div></td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    let allData = []; // store loaded data + live status
+    const API_KEY = 'ad3c7977268e5c3c15479427e5df01c0'; // key từ ảnh
+    const CHECK_LIVE_URL = 'https://checkmail.live/check/';
+
+    window.onload = () => loadData();
+
+    async function loadData() {
+        const cardList   = document.getElementById('cardList');
+        const tableBody  = document.getElementById('tableBody');
+        const dataCount  = document.getElementById('dataCount');
+
+        cardList.innerHTML  = '<div class="loading"><div class="loading-spinner"></div><div>Đang tải dữ liệu...</div></div>';
+        tableBody.innerHTML = '<tr><td colspan="7" class="loading"><div class="loading-spinner"></div><div>Đang tải dữ liệu...</div></td></tr>';
+        dataCount.textContent = 'Đang tải...';
+
+        try {
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbytvG-tfmicCmWLLt6hBH5gh7D-k_zWLeQLZl2TQ1D7VDoDaFWMBVtzrl6gfekiXhr7/exec';
+
+            const result = await new Promise((resolve, reject) => {
+                const callbackName = 'jsonpCb_' + Date.now();
+                window[callbackName] = (data) => {
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    resolve(data);
+                };
+                const script = document.createElement('script');
+                script.src = scriptUrl + '?callback=' + callbackName;
+                script.onerror = () => { delete window[callbackName]; reject(new Error('Failed to load')); };
+                document.body.appendChild(script);
+                setTimeout(() => {
+                    if (window[callbackName]) { delete window[callbackName]; document.body.removeChild(script); reject(new Error('Timeout')); }
+                }, 10000);
+            });
+
+            if (result.status === 'success' && result.data && result.data.length > 0) {
+                // Preserve existing live status if already checked
+                allData = result.data.map((item, i) => ({
+                    ...item,
+                    _status: allData[i]?._status || null
+                }));
+                dataCount.textContent = `Tổng số: ${result.total} bản ghi`;
+                renderAll();
+            } else {
+                allData = [];
+                cardList.innerHTML  = '<div class="no-data">Không có dữ liệu</div>';
+                tableBody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu</td></tr>';
+                dataCount.textContent = 'Tổng số: 0 bản ghi';
+            }
+        } catch (e) {
+            cardList.innerHTML  = `<div class="error">❌ Lỗi: ${e.message}</div>`;
+            tableBody.innerHTML = `<tr><td colspan="7" class="error">❌ Lỗi: ${e.message}</td></tr>`;
+            dataCount.textContent = 'Lỗi tải dữ liệu';
+        }
+    }
+
+    function renderAll() {
+        renderCards();
+        renderTable();
+        updateStats();
+    }
+
+    function statusBadge(s) {
+        if (!s) return '<span class="badge badge-unknown">—</span>';
+        if (s === 'checking') return '<span class="badge badge-checking">⏳ Checking</span>';
+        if (s === 'live')     return '<span class="badge badge-live">✅ Live</span>';
+        if (s === 'die')      return '<span class="badge badge-die">❌ Die</span>';
+        return `<span class="badge badge-verify">⚠️ ${s}</span>`;
+    }
+
+    function renderCards() {
+        const cardList = document.getElementById('cardList');
+        if (!allData.length) { cardList.innerHTML = '<div class="no-data">Không có dữ liệu</div>'; return; }
+
+        cardList.innerHTML = allData.map((item, i) => {
+            const trailClass = item.trail === 'Có Trail' ? 'badge-trail' : 'badge-no-trail';
+            return `
+            <div class="email-card" id="card-${i}">
+                <div class="card-header">
+                    <span class="card-number">#${i+1}</span>
+                    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                        <span class="badge ${trailClass}">${item.trail || '-'}</span>
+                        ${statusBadge(item._status)}
+                    </div>
+                </div>
+                <div class="card-row">
+                    <span class="card-label">📧 Email:</span>
+                    <span class="card-value card-email">${item.email || '-'}</span>
+                </div>
+                <div class="card-row">
+                    <span class="card-label">📱 Phone:</span>
+                    <span class="card-value">${item.phone || '-'}</span>
+                </div>
+                <div class="card-row">
+                    <span class="card-label">🔐 2FA:</span>
+                    <span class="card-value" style="font-size:12px;color:#744210;">${item['2fa'] || item.twofa || '-'}</span>
+                </div>
+                <div class="card-row">
+                    <span class="card-label">📅 Created:</span>
+                    <span class="card-value">${item.created_at || '-'}</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function renderTable() {
+        const tableBody = document.getElementById('tableBody');
+        if (!allData.length) { tableBody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu</td></tr>'; return; }
+
+        tableBody.innerHTML = allData.map((item, i) => {
+            const trailClass = item.trail === 'Có Trail' ? 'badge-trail' : 'badge-no-trail';
+            return `
+            <tr id="row-${i}">
+                <td>${i+1}</td>
+                <td style="color:#667eea;font-weight:500;">${item.email || '-'}</td>
+                <td>${item.phone || '-'}</td>
+                <td style="font-size:12px;color:#744210;max-width:160px;">${item['2fa'] || item.twofa || '-'}</td>
+                <td><span class="badge ${trailClass}">${item.trail || '-'}</span></td>
+                <td id="status-${i}">${statusBadge(item._status)}</td>
+                <td style="white-space:nowrap;">${item.created_at || '-'}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    function updateStats() {
+        const live  = allData.filter(d => d._status === 'live').length;
+        const die   = allData.filter(d => d._status === 'die').length;
+        const other = allData.filter(d => d._status && d._status !== 'live' && d._status !== 'die' && d._status !== 'checking').length;
+
+        if (live + die + other > 0) {
+            document.getElementById('liveStats').style.display = 'block';
+            document.getElementById('statLive').textContent  = `✅ Live: ${live}`;
+            document.getElementById('statDie').textContent   = `❌ Die: ${die}`;
+            document.getElementById('statOther').textContent = `⚠️ Khác: ${other}`;
+        }
+    }
+
+    async function checkLive() {
+        if (!allData.length) { alert('Không có dữ liệu để check!'); return; }
+
+        const btn = document.getElementById('btnCheckLive');
+        const progress = document.getElementById('checkProgress');
+        btn.disabled = true;
+        btn.textContent = '⏳ Đang check...';
+        progress.style.display = 'block';
+
+        const emails = allData.map(d => d.email).filter(Boolean);
+        const CHUNK = 100; // max per request
+        let processed = 0;
+
+        // Mark all as checking
+        allData.forEach((d, i) => {
+            d._status = 'checking';
+            const el = document.getElementById(`status-${i}`);
+            if (el) el.innerHTML = statusBadge('checking');
+            const card = document.getElementById(`card-${i}`);
+            if (card) {
+                const badges = card.querySelector('.card-header > div');
+                if (badges) badges.lastElementChild.outerHTML = statusBadge('checking');
+            }
+        });
+
+        // Process in chunks
+        for (let start = 0; start < emails.length; start += CHUNK) {
+            const chunk = emails.slice(start, start + CHUNK);
+            progress.textContent = `⏳ Đang check ${processed + 1}–${Math.min(processed + CHUNK, emails.length)} / ${emails.length}...`;
 
             try {
-                // Dùng script tag để bypass CORS
-                const scriptUrl = 'https://script.google.com/macros/s/AKfycbytvG-tfmicCmWLLt6hBH5gh7D-k_zWLeQLZl2TQ1D7VDoDaFWMBVtzrl6gfekiXhr7/exec';
-                
-                // Tạo promise để đợi callback
-                const result = await new Promise((resolve, reject) => {
-                    const callbackName = 'jsonpCallback_' + Date.now();
-                    window[callbackName] = function(data) {
-                        delete window[callbackName];
-                        document.body.removeChild(script);
-                        resolve(data);
-                    };
-                    
-                    const script = document.createElement('script');
-                    script.src = scriptUrl + '?callback=' + callbackName;
-                    script.onerror = () => {
-                        delete window[callbackName];
-                        reject(new Error('Failed to load data'));
-                    };
-                    document.body.appendChild(script);
-                    
-                    // Timeout sau 10s
-                    setTimeout(() => {
-                        if (window[callbackName]) {
-                            delete window[callbackName];
-                            document.body.removeChild(script);
-                            reject(new Error('Request timeout'));
-                        }
-                    }, 10000);
+                const res = await fetch(CHECK_LIVE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api_key: API_KEY, emails: chunk })
                 });
+                const json = await res.json();
 
-                if (result.status === 'success' && result.data && result.data.length > 0) {
-                    dataCount.textContent = `Tổng số: ${result.total} bản ghi`;
-                    
-                    // Build mobile cards
-                    let cardHtml = '';
-                    result.data.forEach((item, index) => {
-                        const trailClass = item.trail === 'Có Trail' ? 'badge-trail' : 'badge-no-trail';
-                        cardHtml += `
-                            <div class="email-card">
-                                <div class="card-header">
-                                    <span class="card-number">#${index + 1}</span>
-                                    <span class="card-badge ${trailClass}">${item.trail || '-'}</span>
-                                </div>
-                                <div class="card-row">
-                                    <span class="card-label">📧 Email:</span>
-                                    <span class="card-value card-email">${item.email || '-'}</span>
-                                </div>
-                                <div class="card-row">
-                                    <span class="card-label">📱 Phone:</span>
-                                    <span class="card-value">${item.phone || '-'}</span>
-                                </div>
-                                <div class="card-row">
-                                    <span class="card-label">📅 Created:</span>
-                                    <span class="card-value">${item.created_at || '-'}</span>
-                                </div>
-                            </div>
-                        `;
+                if (json.status && json.data) {
+                    json.data.forEach(result => {
+                        // Find matching index by email
+                        const idx = allData.findIndex(d => d.email === result.email);
+                        if (idx === -1) return;
+
+                        // Map status: 1 = live, 2 = die, else = status string
+                        let st;
+                        if (result.index === 1 || result.status === 'live')   st = 'live';
+                        else if (result.index === 2 || result.status === 'die') st = 'die';
+                        else st = result.status || 'unknown';
+
+                        allData[idx]._status = st;
+
+                        // Update table cell
+                        const el = document.getElementById(`status-${idx}`);
+                        if (el) el.innerHTML = statusBadge(st);
                     });
-                    cardList.innerHTML = cardHtml;
-                    
-                    // Build desktop table
-                    let tableHtml = '';
-                    result.data.forEach((item, index) => {
-                        const trailClass = item.trail === 'Có Trail' ? 'badge-trail' : 'badge-no-trail';
-                        tableHtml += `
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${item.email || '-'}</td>
-                                <td>${item.phone || '-'}</td>
-                                <td><span class="card-badge ${trailClass}">${item.trail || '-'}</span></td>
-                                <td>${item.created_at || '-'}</td>
-                            </tr>
-                        `;
-                    });
-                    tableBody.innerHTML = tableHtml;
-                } else {
-                    cardList.innerHTML = '<div class="no-data">Không có dữ liệu</div>';
-                    tableBody.innerHTML = '<tr><td colspan="5" class="no-data">Không có dữ liệu</td></tr>';
-                    dataCount.textContent = 'Tổng số: 0 bản ghi';
                 }
-
-            } catch (error) {
-                cardList.innerHTML = `<div class="error">❌ Lỗi: ${error.message}</div>`;
-                tableBody.innerHTML = `<tr><td colspan="5" class="error">❌ Lỗi: ${error.message}</td></tr>`;
-                dataCount.textContent = 'Lỗi tải dữ liệu';
+            } catch (e) {
+                console.error('Check live error:', e);
             }
+
+            processed += chunk.length;
         }
-    </script>
+
+        updateStats();
+        renderCards(); // re-render cards fully to show updated status
+        progress.textContent = `✅ Check xong ${processed} email!`;
+        progress.style.background = '#c6f6d5';
+        progress.style.borderColor = '#48bb78';
+        progress.style.color = '#22543d';
+
+        btn.disabled = false;
+        btn.textContent = '⚡ Check Live';
+    }
+</script>
 </body>
 </html>
