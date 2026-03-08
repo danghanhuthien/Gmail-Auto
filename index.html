@@ -108,6 +108,62 @@
             transform: translateY(-2px);
         }
 
+        /* 2FA section styling */
+        .twofa-section {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+            border: 2px solid #f6c90e;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .twofa-section .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #b7791f;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .twofa-section .input-group {
+            margin-bottom: 12px;
+        }
+
+        .twofa-section .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .twofa-section label {
+            color: #744210;
+        }
+
+        .twofa-section input {
+            border-color: #f6c90e;
+            background: white;
+        }
+
+        .twofa-section input:read-only {
+            background: #fffbeb;
+        }
+
+        .twofa-section input:focus {
+            border-color: #d97706;
+        }
+
+        .btn-2fa {
+            background: #d97706;
+            color: white;
+        }
+
+        .btn-2fa:hover {
+            background: #b45309;
+            transform: translateY(-2px);
+        }
+
         .btn-submit {
             width: 100%;
             background: #f56565;
@@ -247,6 +303,24 @@
             <input type="text" id="codeInput" readonly placeholder="Code sẽ được lấy tự động">
         </div>
 
+        <!-- 2FA SECTION -->
+        <div class="twofa-section">
+            <div class="section-title">🔐 2FA Authentication</div>
+
+            <div class="input-group">
+                <label>Email 2FA (nhập thủ công hoặc tự động)</label>
+                <div class="input-wrapper">
+                    <input type="text" id="email2faInput" placeholder="Email nhận mã 2FA">
+                    <button class="btn-2fa" onclick="get2FACode()">Get Code</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Mã 2FA</label>
+                <input type="text" id="code2faInput" readonly placeholder="Mã 2FA sẽ được lấy tự động">
+            </div>
+        </div>
+
         <div class="input-group">
             <label>Trail</label>
             <select id="trailInput">
@@ -263,7 +337,7 @@
     </div>
 
     <script>
-        let currentOrderId = null; // Lưu order ID khi get OTP
+        let currentOrderId = null;
         
         // Auto copy khi click vào input có dữ liệu
         document.querySelectorAll('input').forEach(input => {
@@ -297,10 +371,9 @@
             const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
             const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
             const connector = connectors[Math.floor(Math.random() * connectors.length)];
-            const randomNum = Math.floor(Math.random() * 90000) + 10000; // 5 chữ số: 10000-99999
-            const shortNum = Math.floor(Math.random() * 9000) + 1000; // 4 chữ số: 1000-9999
+            const randomNum = Math.floor(Math.random() * 90000) + 10000;
+            const shortNum = Math.floor(Math.random() * 9000) + 1000;
             
-            // Random format - ĐA DẠNG hơn và KHÔNG có dấu chấm
             const formats = [
                 `${firstName}${middleName}${lastName}${suffix}${randomNum}`,
                 `${lastName}${firstName}${middleName}${suffix}${randomNum}`,
@@ -328,23 +401,19 @@
             const specials = '@$%&!#';
             
             let password = '';
-            const length = 10 + Math.floor(Math.random() * 5); // 10-14 ký tự
+            const length = 10 + Math.floor(Math.random() * 5);
             
-            // Đảm bảo có ít nhất 1 chữ hoa, 1 chữ thường, 1 số, 1 ký tự đặc biệt
-            password += chars.charAt(Math.floor(Math.random() * 26)); // Chữ thường
-            password += chars.charAt(26 + Math.floor(Math.random() * 26)); // Chữ hoa
+            password += chars.charAt(Math.floor(Math.random() * 26));
+            password += chars.charAt(26 + Math.floor(Math.random() * 26));
             password += numbers.charAt(Math.floor(Math.random() * numbers.length));
             password += specials.charAt(Math.floor(Math.random() * specials.length));
             
-            // Thêm các ký tự ngẫu nhiên còn lại
             const allChars = chars + numbers + specials;
             for (let i = password.length; i < length; i++) {
                 password += allChars.charAt(Math.floor(Math.random() * allChars.length));
             }
             
-            // Shuffle password
             password = password.split('').sort(() => Math.random() - 0.5).join('');
-            
             return password;
         }
 
@@ -360,17 +429,14 @@
             try {
                 const response = await fetch('https://gmailios.vn/api/order-sms/5/xsh9TXWCusAR83zcRptZEuls6ocp9j/viettel', {
                     method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    headers: { 'Accept': 'application/json' }
                 });
 
                 const result = await response.json();
                 
                 if (result.status === 'success') {
                     const phoneNumber = result.data.phone_number;
-                    currentOrderId = result.data.id; // Lưu ID để check SMS sau
-                    
+                    currentOrderId = result.data.id;
                     document.getElementById('phoneInput').value = phoneNumber;
                     showStatus(`✅ Đã thuê số: ${phoneNumber}`, 'success');
                 } else {
@@ -392,16 +458,13 @@
             try {
                 const response = await fetch(`https://gmailios.vn/api/check-order/${currentOrderId}`, {
                     method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    headers: { 'Accept': 'application/json' }
                 });
 
                 const result = await response.json();
                 
                 if (result.status === 'success') {
                     const codeOtp = result.data.code_otp;
-                    
                     if (codeOtp && codeOtp !== '') {
                         document.getElementById('smsCodeInput').value = codeOtp;
                         showStatus(`✅ Đã nhận được SMS Code: ${codeOtp}`, 'success');
@@ -419,30 +482,21 @@
         async function generateEmail() {
             let emailInput = document.getElementById('emailInput').value;
             
-            // Nếu chưa có email hoặc không phải @gmail.com thì tự động tạo
             if (!emailInput || !emailInput.includes('@gmail.com')) {
-                // Tạo username ngẫu nhiên
                 const randomUsername = generateRandomName();
                 emailInput = randomUsername + '@gmail.com';
                 document.getElementById('emailInput').value = emailInput;
             }
 
-            // Lấy phần trước @gmail.com
             const username = emailInput.split('@gmail.com')[0];
-            
-            // Điền vào input username
             document.getElementById('usernameInput').value = username;
             
-            // Tạo random 6 ký tự
             const randomStr = generateRandomString(6);
-            
-            // Tạo email mới
             const newEmail = `${username}${randomStr}@blondmail.com`;
             document.getElementById('mailkpInput').value = newEmail;
 
             showStatus('Đang tạo inbox...', 'info');
 
-            // Gọi API tạo inbox
             try {
                 const response = await fetch(`https://inboxes-com.p.rapidapi.com/inboxes/${newEmail}`, {
                     method: 'POST',
@@ -487,14 +541,12 @@
 
                 const emails = await response.json();
                 
-                // Tìm email từ Google với verification code
                 const googleEmail = emails.find(email => 
                     email.from.includes('noreply@google.com') && 
                     email.subject.includes('Email verification code')
                 );
 
                 if (googleEmail) {
-                    // Lấy code từ subject (format: "Email verification code: 459371")
                     const code = googleEmail.subject.split(':')[1].trim();
                     document.getElementById('codeInput').value = code;
                     showStatus(`✅ Đã lấy code: ${code}`, 'success');
@@ -506,19 +558,92 @@
             }
         }
 
+        // =====================
+        // 2FA GET CODE
+        // =====================
+        async function get2FACode() {
+            const email2fa = document.getElementById('email2faInput').value.trim();
+
+            if (!email2fa) {
+                showStatus('Vui lòng nhập email 2FA trước', 'error');
+                return;
+            }
+
+            showStatus('Đang lấy mã 2FA...', 'info');
+
+            try {
+                const response = await fetch(`https://inboxes-com.p.rapidapi.com/inboxes/${email2fa}`, {
+                    method: 'GET',
+                    headers: {
+                        'x-rapidapi-host': 'inboxes-com.p.rapidapi.com',
+                        'x-rapidapi-key': '99ce4b7878msh6d53a5bae8037f0p112929jsn2dbaedf1cb0e'
+                    }
+                });
+
+                const emails = await response.json();
+
+                if (!emails || emails.length === 0) {
+                    showStatus('⚠️ Chưa có email nào trong hộp thư 2FA. Thử lại sau...', 'error');
+                    return;
+                }
+
+                // Tìm email 2FA từ Google — thử nhiều subject phổ biến
+                const twoFaEmail = emails.find(email =>
+                    email.from && (
+                        email.from.includes('noreply@google.com') ||
+                        email.from.includes('google.com')
+                    ) && (
+                        (email.subject && email.subject.toLowerCase().includes('2-step')) ||
+                        (email.subject && email.subject.toLowerCase().includes('verification code')) ||
+                        (email.subject && email.subject.toLowerCase().includes('security code')) ||
+                        (email.subject && email.subject.toLowerCase().includes('sign-in attempt')) ||
+                        (email.subject && email.subject.toLowerCase().includes('new sign-in'))
+                    )
+                ) || emails[0]; // fallback: lấy email mới nhất nếu không match
+
+                // Thử lấy code từ subject
+                let code2fa = '';
+                if (twoFaEmail && twoFaEmail.subject) {
+                    const subjectMatch = twoFaEmail.subject.match(/\b\d{6,8}\b/);
+                    if (subjectMatch) {
+                        code2fa = subjectMatch[0];
+                    }
+                }
+
+                // Nếu không lấy được từ subject, thử body
+                if (!code2fa && twoFaEmail && twoFaEmail.body) {
+                    const bodyMatch = twoFaEmail.body.match(/\b\d{6,8}\b/);
+                    if (bodyMatch) {
+                        code2fa = bodyMatch[0];
+                    }
+                }
+
+                if (code2fa) {
+                    document.getElementById('code2faInput').value = code2fa;
+                    showStatus(`✅ Đã lấy mã 2FA: ${code2fa}`, 'success');
+                } else {
+                    showStatus('⚠️ Không tìm thấy mã 2FA trong email. Thử lại sau...', 'error');
+                }
+
+            } catch (error) {
+                showStatus('❌ Lỗi khi lấy mã 2FA: ' + error.message, 'error');
+            }
+        }
+
         async function submitData() {
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
             const recovery = document.getElementById('mailkpInput').value;
             const phone = document.getElementById('phoneInput').value;
             const trail = document.getElementById('trailInput').value;
+            const twofa = document.getElementById('email2faInput').value.trim(); // Email 2FA (input)
+            const code2fa = document.getElementById('code2faInput').value.trim(); // Mã 2FA
 
             if (!email || !password || !recovery) {
                 showStatus('Vui lòng điền đầy đủ thông tin', 'error');
                 return;
             }
 
-            // Lấy ngày giờ hiện tại
             const now = new Date();
             const created_at = now.toLocaleString('vi-VN', {
                 year: 'numeric',
@@ -544,12 +669,13 @@
                         password: password,
                         recovery: recovery,
                         phone: phone,
+                        twofa: twofa,       // Email 2FA
+                        code2fa: code2fa,   // Mã 2FA
                         trail: trail,
                         created_at: created_at
                     })
                 });
 
-                // Với no-cors, không thể đọc response nhưng nếu không có lỗi nghĩa là đã gửi thành công
                 showStatus('✅ Submit thành công!', 'success');
                 
             } catch (error) {
