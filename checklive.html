@@ -123,6 +123,99 @@
             font-size: 14px;
         }
 
+        /* ===== PAGINATION ===== */
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .per-page-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .per-page-selector label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .per-page-selector select {
+            padding: 6px 12px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .per-page-selector select:hover {
+            background: #f0f2ff;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .page-nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 6px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            color: #555;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 36px;
+            text-align: center;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: #667eea;
+            color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .page-btn.ellipsis {
+            border-color: transparent;
+            background: transparent;
+            cursor: default;
+            color: #aaa;
+        }
+
         /* Mobile Card Layout */
         .card-list {
             display: flex;
@@ -168,35 +261,12 @@
             font-weight: 600;
         }
 
-        .badge-trail {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-
-        .badge-no-trail {
-            background: #fed7d7;
-            color: #742a2a;
-        }
-
-        .badge-live {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-
-        .badge-die {
-            background: #fed7d7;
-            color: #742a2a;
-        }
-
-        .badge-verify-phone {
-            background: #fef3c7;
-            color: #78350f;
-        }
-
-        .badge-checking {
-            background: #e0e7ff;
-            color: #3730a3;
-        }
+        .badge-trail { background: #c6f6d5; color: #22543d; }
+        .badge-no-trail { background: #fed7d7; color: #742a2a; }
+        .badge-live { background: #c6f6d5; color: #22543d; }
+        .badge-die { background: #fed7d7; color: #742a2a; }
+        .badge-verify-phone { background: #fef3c7; color: #78350f; }
+        .badge-checking { background: #e0e7ff; color: #3730a3; }
 
         .card-row {
             display: flex;
@@ -262,9 +332,7 @@
 
         /* Desktop Table Layout */
         @media (min-width: 768px) {
-            .card-list {
-                display: none;
-            }
+            .card-list { display: none; }
 
             .table-wrapper {
                 display: block;
@@ -291,27 +359,22 @@
                 border-bottom: 1px solid #e0e0e0;
             }
 
-            table tr:hover {
-                background: #f7fafc;
-            }
+            table tr:hover { background: #f7fafc; }
+            table tr:nth-child(even) { background: #f9f9f9; }
 
-            table tr:nth-child(even) {
-                background: #f9f9f9;
-            }
-
-            .badge-trail, .badge-no-trail, .badge-live, .badge-die, .badge-verify-phone, .badge-checking {
+            .badge-trail, .badge-no-trail, .badge-live, .badge-die,
+            .badge-verify-phone, .badge-checking {
                 display: inline-block;
             }
         }
 
-        /* Mobile: Hide table */
         @media (max-width: 767px) {
-            .table-wrapper {
-                display: none;
-            }
+            .table-wrapper { display: none; }
+            .card-list { display: flex; }
 
-            .card-list {
-                display: flex;
+            .pagination-controls {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
@@ -320,7 +383,7 @@
     <div class="container">
         <div class="header">
             <h1>📧 Danh sách Email</h1>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button class="btn-check-live" id="btnCheckLive" onclick="checkAllEmailsLive()">🔍 Check Live</button>
                 <button class="btn-refresh" onclick="loadData()">🔄 Refresh</button>
                 <a href="index.html" class="btn-back">← Quay lại</a>
@@ -330,6 +393,25 @@
         <div class="data-info">
             <div class="data-count" id="dataCount">Đang tải...</div>
             <div class="check-status" id="checkStatus"></div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-controls" id="paginationControls" style="display:none;">
+            <div class="per-page-selector">
+                <label>Hiển thị:</label>
+                <select id="perPageSelect" onchange="changePerPage()">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <label>bản ghi / trang</label>
+            </div>
+            <div class="page-info" id="pageInfo"></div>
+            <div class="page-nav" id="pageNav"></div>
         </div>
 
         <!-- Mobile Card View -->
@@ -363,35 +445,52 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination Bottom -->
+        <div class="pagination-controls" id="paginationControlsBottom" style="display:none; margin-top:15px; margin-bottom:0;">
+            <div class="page-info" id="pageInfoBottom"></div>
+            <div class="page-nav" id="pageNavBottom"></div>
+        </div>
     </div>
 
     <script>
         let emailData = [];
+        let currentPage = 1;
+        let perPage = 10;
+
         const API_KEY = "ad3c7977268e5c3c15479427e5df01c0";
-        
-        // Google Apps Script Proxy URL - ĐÃ CẬP NHẬT
         const PROXY_URL = "https://script.google.com/macros/s/AKfycbwxeMIfJJoRtEw8Hxd_QRhVlMD2YC074XcbgAEk58DdqVwGJQuMGcDArlEvXIp4-V2zsQ/exec";
 
-        // Auto load data when page loads
-        window.onload = function() {
-            loadData();
-        };
+        window.onload = function() { loadData(); };
+
+        // Parse date từ nhiều định dạng
+        function parseDate(str) {
+            if (!str) return new Date(0);
+            // Thử ISO
+            let d = new Date(str);
+            if (!isNaN(d)) return d;
+            // Thử dd/mm/yyyy hh:mm:ss
+            const m = str.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{2}):(\d{2}):(\d{2})/);
+            if (m) return new Date(m[3], m[2]-1, m[1], m[4], m[5], m[6]);
+            return new Date(0);
+        }
 
         async function loadData() {
             const cardList = document.getElementById('cardList');
             const tableBody = document.getElementById('tableBody');
             const dataCount = document.getElementById('dataCount');
-            
-            // Show loading
+            const paginationControls = document.getElementById('paginationControls');
+            const paginationControlsBottom = document.getElementById('paginationControlsBottom');
+
             cardList.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div>Đang tải dữ liệu...</div></div>';
             tableBody.innerHTML = '<tr><td colspan="6" class="loading"><div class="loading-spinner"></div><div>Đang tải dữ liệu...</div></td></tr>';
             dataCount.textContent = 'Đang tải...';
+            paginationControls.style.display = 'none';
+            paginationControlsBottom.style.display = 'none';
 
             try {
-                // Dùng script tag để bypass CORS
                 const scriptUrl = 'https://script.google.com/macros/s/AKfycbytvG-tfmicCmWLLt6hBH5gh7D-k_zWLeQLZl2TQ1D7VDoDaFWMBVtzrl6gfekiXhr7/exec';
-                
-                // Tạo promise để đợi callback
+
                 const result = await new Promise((resolve, reject) => {
                     const callbackName = 'jsonpCallback_' + Date.now();
                     window[callbackName] = function(data) {
@@ -399,7 +498,6 @@
                         document.body.removeChild(script);
                         resolve(data);
                     };
-                    
                     const script = document.createElement('script');
                     script.src = scriptUrl + '?callback=' + callbackName;
                     script.onerror = () => {
@@ -407,8 +505,6 @@
                         reject(new Error('Failed to load data'));
                     };
                     document.body.appendChild(script);
-                    
-                    // Timeout sau 10s
                     setTimeout(() => {
                         if (window[callbackName]) {
                             delete window[callbackName];
@@ -419,18 +515,18 @@
                 });
 
                 if (result.status === 'success' && result.data && result.data.length > 0) {
-                    emailData = result.data.map(item => ({
-                        ...item,
-                        liveStatus: null
-                    }));
-                    
+                    emailData = result.data
+                        .map(item => ({ ...item, liveStatus: null }))
+                        // Sắp xếp: ngày tạo gần nhất lên đầu
+                        .sort((a, b) => parseDate(b.created_at) - parseDate(a.created_at));
+
+                    currentPage = 1;
                     renderEmailList();
                 } else {
                     cardList.innerHTML = '<div class="no-data">Không có dữ liệu</div>';
                     tableBody.innerHTML = '<tr><td colspan="6" class="no-data">Không có dữ liệu</td></tr>';
                     dataCount.textContent = 'Tổng số: 0 bản ghi';
                 }
-
             } catch (error) {
                 cardList.innerHTML = `<div class="error">❌ Lỗi: ${error.message}</div>`;
                 tableBody.innerHTML = `<tr><td colspan="6" class="error">❌ Lỗi: ${error.message}</td></tr>`;
@@ -438,24 +534,88 @@
             }
         }
 
+        function changePerPage() {
+            perPage = parseInt(document.getElementById('perPageSelect').value);
+            currentPage = 1;
+            renderEmailList();
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(emailData.length / perPage);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderEmailList();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderPagination(containerId, infoId) {
+            const totalPages = Math.ceil(emailData.length / perPage);
+            const start = (currentPage - 1) * perPage + 1;
+            const end = Math.min(currentPage * perPage, emailData.length);
+
+            document.getElementById(infoId).textContent =
+                `Trang ${currentPage}/${totalPages} — Hiển thị ${start}–${end} / ${emailData.length} bản ghi`;
+
+            const nav = document.getElementById(containerId);
+            let html = '';
+
+            // Prev
+            html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹ Trước</button>`;
+
+            // Page numbers with smart ellipsis
+            const pages = getPageNumbers(currentPage, totalPages);
+            pages.forEach(p => {
+                if (p === '...') {
+                    html += `<button class="page-btn ellipsis">…</button>`;
+                } else {
+                    html += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
+                }
+            });
+
+            // Next
+            html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Sau ›</button>`;
+
+            nav.innerHTML = html;
+        }
+
+        function getPageNumbers(current, total) {
+            if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+            const pages = [];
+            if (current <= 4) {
+                pages.push(1, 2, 3, 4, 5, '...', total);
+            } else if (current >= total - 3) {
+                pages.push(1, '...', total - 4, total - 3, total - 2, total - 1, total);
+            } else {
+                pages.push(1, '...', current - 1, current, current + 1, '...', total);
+            }
+            return pages;
+        }
+
         function renderEmailList() {
             const cardList = document.getElementById('cardList');
             const tableBody = document.getElementById('tableBody');
             const dataCount = document.getElementById('dataCount');
-            
+            const paginationControls = document.getElementById('paginationControls');
+            const paginationControlsBottom = document.getElementById('paginationControlsBottom');
+
             dataCount.textContent = `Tổng số: ${emailData.length} bản ghi`;
-            
-            // Build mobile cards
+
+            // Slice dữ liệu theo trang
+            const start = (currentPage - 1) * perPage;
+            const end = start + perPage;
+            const pageData = emailData.slice(start, end);
+
+            // Mobile cards
             let cardHtml = '';
-            emailData.forEach((item, index) => {
+            pageData.forEach((item, idx) => {
+                const globalIndex = start + idx + 1;
                 const trailClass = item.trail === 'Có Trail' ? 'badge-trail' : 'badge-no-trail';
                 const liveStatusBadge = getLiveStatusBadge(item.liveStatus);
-                
                 cardHtml += `
                     <div class="email-card">
                         <div class="card-header">
-                            <span class="card-number">#${index + 1}</span>
-                            <div style="display: flex; gap: 5px;">
+                            <span class="card-number">#${globalIndex}</span>
+                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
                                 <span class="card-badge ${trailClass}">${item.trail || '-'}</span>
                                 ${liveStatusBadge}
                             </div>
@@ -475,17 +635,17 @@
                     </div>
                 `;
             });
-            cardList.innerHTML = cardHtml;
-            
-            // Build desktop table
+            cardList.innerHTML = cardHtml || '<div class="no-data">Không có dữ liệu</div>';
+
+            // Desktop table
             let tableHtml = '';
-            emailData.forEach((item, index) => {
+            pageData.forEach((item, idx) => {
+                const globalIndex = start + idx + 1;
                 const trailClass = item.trail === 'Có Trail' ? 'badge-trail' : 'badge-no-trail';
                 const liveStatusBadge = getLiveStatusBadge(item.liveStatus);
-                
                 tableHtml += `
                     <tr>
-                        <td>${index + 1}</td>
+                        <td>${globalIndex}</td>
                         <td>${item.email || '-'}</td>
                         <td>${item.phone || '-'}</td>
                         <td><span class="card-badge ${trailClass}">${item.trail || '-'}</span></td>
@@ -494,30 +654,26 @@
                     </tr>
                 `;
             });
-            tableBody.innerHTML = tableHtml;
+            tableBody.innerHTML = tableHtml || '<tr><td colspan="6" class="no-data">Không có dữ liệu</td></tr>';
+
+            // Hiện pagination
+            paginationControls.style.display = 'flex';
+            paginationControlsBottom.style.display = 'flex';
+
+            renderPagination('pageNav', 'pageInfo');
+            renderPagination('pageNavBottom', 'pageInfoBottom');
         }
 
         function getLiveStatusBadge(status) {
             if (!status) return '';
-            
-            let badgeClass = '';
-            let statusText = status;
-            
-            if (status === 'live') {
-                badgeClass = 'badge-live';
-                statusText = '✅ Live';
-            } else if (status === 'die') {
-                badgeClass = 'badge-die';
-                statusText = '❌ Die';
-            } else if (status === 'verify_phone') {
-                badgeClass = 'badge-verify-phone';
-                statusText = '📱 Verify Phone';
-            } else if (status === 'checking') {
-                badgeClass = 'badge-checking';
-                statusText = '⏳ Checking...';
-            }
-            
-            return `<span class="card-badge ${badgeClass}">${statusText}</span>`;
+            const map = {
+                live: ['badge-live', '✅ Live'],
+                die: ['badge-die', '❌ Die'],
+                verify_phone: ['badge-verify-phone', '📱 Verify Phone'],
+                checking: ['badge-checking', '⏳ Checking...']
+            };
+            const [cls, text] = map[status] || ['', status];
+            return `<span class="card-badge ${cls}">${text}</span>`;
         }
 
         async function checkAllEmailsLive() {
@@ -528,87 +684,59 @@
 
             const btnCheckLive = document.getElementById('btnCheckLive');
             const checkStatus = document.getElementById('checkStatus');
-            
+
             btnCheckLive.disabled = true;
             btnCheckLive.textContent = '⏳ Đang check...';
-            
-            // Lấy danh sách email
-            const emails = emailData.map(item => item.email).filter(email => email);
-            
-            // Chia nhỏ thành các batch tối đa 1000 emails
+
+            const emails = emailData.map(item => item.email).filter(Boolean);
             const batchSize = 1000;
             const batches = [];
-            
-            for (let i = 0; i < emails.length; i += batchSize) {
-                batches.push(emails.slice(i, i + batchSize));
-            }
-            
-            let totalChecked = 0;
-            let totalLive = 0;
-            let totalDie = 0;
-            let totalVerifyPhone = 0;
-            
+            for (let i = 0; i < emails.length; i += batchSize) batches.push(emails.slice(i, i + batchSize));
+
+            let totalChecked = 0, totalLive = 0, totalDie = 0, totalVerifyPhone = 0;
+
             try {
                 for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
                     const batch = batches[batchIndex];
-                    
                     checkStatus.textContent = `Đang check batch ${batchIndex + 1}/${batches.length} (${batch.length} emails)...`;
-                    
-                    // Set status checking cho batch này
+
                     batch.forEach(email => {
                         const item = emailData.find(d => d.email === email);
                         if (item) item.liveStatus = 'checking';
                     });
                     renderEmailList();
-                    
-                    // Call API thông qua proxy
+
                     const response = await fetch(PROXY_URL, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            api_key: API_KEY,
-                            emails: batch
-                        })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ api_key: API_KEY, emails: batch })
                     });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
+
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     const result = await response.json();
-                    console.log('API Response:', result);
-                    
+
                     if (result.status && result.data) {
-                        // Cập nhật status cho từng email
                         result.data.forEach(emailResult => {
                             const item = emailData.find(d => d.email === emailResult.email);
                             if (item) {
                                 item.liveStatus = emailResult.status;
                                 totalChecked++;
-                                
-                                // Đếm theo status
                                 if (emailResult.status === 'live') totalLive++;
                                 else if (emailResult.status === 'die') totalDie++;
                                 else if (emailResult.status === 'verify_phone') totalVerifyPhone++;
                             }
                         });
-                        
                         renderEmailList();
                     } else {
                         throw new Error(result.message || 'API trả về lỗi');
                     }
-                    
-                    // Delay 1s giữa các batch để tránh rate limit
-                    if (batchIndex < batches.length - 1) {
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                    }
+
+                    if (batchIndex < batches.length - 1) await new Promise(r => setTimeout(r, 1000));
                 }
-                
+
                 checkStatus.textContent = `✅ Hoàn thành! Live: ${totalLive} | Die: ${totalDie} | Verify: ${totalVerifyPhone}`;
                 alert(`Check xong!\n\n✅ Live: ${totalLive}\n❌ Die: ${totalDie}\n📱 Verify Phone: ${totalVerifyPhone}\n\nTổng: ${totalChecked}/${emails.length}`);
-                
+
             } catch (error) {
                 console.error('Error checking emails:', error);
                 checkStatus.textContent = `❌ Lỗi: ${error.message}`;
