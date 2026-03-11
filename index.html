@@ -360,11 +360,42 @@
         }
 
         function generateRandomName() {
-            const firstNames = ['nguyen', 'tran', 'le', 'pham', 'hoang', 'vo', 'dang', 'bui', 'duong', 'ngo', 'ly', 'vuong', 'trinh', 'dao', 'mai', 'ta', 'ha', 'do', 'dinh', 'phan', 'cao'];
-            const middleNames = ['van', 'thi', 'duc', 'minh', 'hoang', 'kim', 'thanh', 'quoc', 'anh', 'tuan', 'hong', 'huong', 'duy', 'thang', 'hai', 'long', 'ngoc', 'xuan', 'thu', 'phuoc', 'huu', 'trung'];
-            const lastNames = ['hung', 'linh', 'hoa', 'lan', 'son', 'nga', 'thu', 'binh', 'phuong', 'hieu', 'khoa', 'phong', 'dung', 'quan', 'tuan', 'tai', 'nam', 'nhi', 'tam', 'tu', 'nhat', 'hai'];
-            const suffixes = ['dj', 'pro', 'vip', 'official', 'real', 'kp', 'bat', 'dev', 'main', 'acc', 'haka', 'kaxi', 'boss', 'king', 'tech', 'cute', 'love', 'gaming', 'music', 'art', 'cool', 'super', 'mega', 'ultra', 'top', 'best', 'star'];
-            const connectors = ['x', 'z', 'v', 'k', 'the', 'mr', 'ms', 'dr', 'sir'];
+const firstNames = [
+'nguyen','tran','le','pham','hoang','vo','dang','bui','duong','ngo','ly','vuong','trinh','dao','mai','ta','ha','do','dinh','phan','cao',
+'truong','luu','ho','lam','ton','chau','vu','trieu','huynh','phung','quach','thai','tang','mac','khuc','la','kien','au','ong','to',
+'thach','nghiem','luong','tap','lac','tieu','khuu','phan','han','phan','trinh','pham','kieu','van','hoang','huynh','phung','thai',
+'phu','thanh','vuong','nghi','yen','man','phi','bao','tang','lu','khai','linh','anh','vu','doan','nghiem','trieu','trac'
+];
+
+const middleNames = [
+'van','thi','duc','minh','hoang','kim','thanh','quoc','anh','tuan','hong','huong','duy','thang','hai','long','ngoc','xuan','thu','phuoc','huu','trung',
+'quang','khanh','viet','bao','dang','phat','trong','gia','nguyen','tien','huy','lam','nghia','kiet','an','binh','chau','danh','dat','giang',
+'han','hao','hiep','khoi','luan','manh','nhan','phuc','quy','son','tan','thai','thien','tho','tinh','toan','trieu','vinh','yen','linh',
+'my','phuong','thao','trang','mai','uyen','vy','huan','thang','hai','dai','thuc','duc','tri','tuan','viet','bao','nam','khoa','huy',
+'bao','tien','ngan','chau','anh','thu','ngoc','nghi','tinh','vu','dat','thanh','kiet','hieu','duong'
+];
+
+const lastNames = [
+'hung','linh','hoa','lan','son','nga','thu','binh','phuong','hieu','khoa','phong','dung','quan','tuan','tai','nam','nhi','tam','tu','nhat','hai',
+'khanh','phat','dat','bao','phuc','loc','an','vinh','trung','nghia','tien','lam','giang','trang','thao','han','vy','yen','mai','loan',
+'chau','huong','diep','uyen','my','kieu','trinh','thuong','nhung','quyen','anh','thuy','phuong','hao','kiet','trieu','bao','phu','dai',
+'hai','son','viet','duc','quang','phat','tan','dat','long','minh','ngoc','vinh','bao','tien','trung','khoa','manh','thanh','hieu','duy',
+'quy','thinh','lam','chau','ngan','thao','phuong','trang','vy','mai','han','yen','linh','thu','ngoc','my','khanh'
+];
+
+const suffixes = [
+'dj','pro','vip','official','real','kp','bat','dev','main','acc','haka','kaxi','boss','king','tech','cute','love','gaming','music','art',
+'cool','super','mega','ultra','top','best','star',
+'vn','vietnam','asia','global','online','zone','team','group','studio','media','digital','plus','xpro','master','elite','prime','legend',
+'gamer','creator','builder','maker','player','coder','hacker','engineer','designer','network','cloud','ai','data','labs',
+'world','central','system','solution','alpha','beta','omega','neo','nova','core','matrix','vision','future','next','hub','space','factory'
+];
+
+const connectors = [
+'x','z','v','k','the','mr','ms','dr','sir',
+'its','im','real','iam','official','only','just','hey','yo','not','true','this','that','alpha','beta','omega','neo','dark','light',
+'lord','boss','king','queen','hero','pro','vip','real','super','ultra','mega','hyper','smart','fast','wild','crazy','silent'
+];
             
             const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
             const middleName = middleNames[Math.floor(Math.random() * middleNames.length)];
