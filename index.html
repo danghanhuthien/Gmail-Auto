@@ -164,6 +164,17 @@
             transform: translateY(-2px);
         }
 
+        .btn-paste {
+            background: #667eea;
+            color: white;
+            padding: 12px 14px;
+        }
+
+        .btn-paste:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
         .btn-submit {
             width: 100%;
             background: #f56565;
@@ -311,6 +322,7 @@
                 <label>Secret Key 2FA</label>
                 <div class="input-wrapper">
                     <input type="text" id="secret2faInput" placeholder="Nhập secret key (vd: k6pe 6kcl...)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                    <button class="btn-paste" onclick="pasteSecret2FA()" title="Dán từ clipboard">📋 Paste</button>
                     <button class="btn-2fa" onclick="get2FACode()">Get Code</button>
                 </div>
             </div>
@@ -349,6 +361,20 @@
                 }
             });
         });
+
+        // Paste secret 2FA từ clipboard
+        async function pasteSecret2FA() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('secret2faInput').value = text.trim();
+                showStatus('✅ Đã dán Secret Key 2FA', 'success');
+            } catch (e) {
+                // Fallback nếu trình duyệt không hỗ trợ Clipboard API
+                document.getElementById('secret2faInput').focus();
+                document.execCommand('paste');
+                showStatus('✅ Đã dán Secret Key 2FA', 'success');
+            }
+        }
 
         function generateRandomString(length) {
             const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -593,7 +619,6 @@ const connectors = [
         // TOTP 2FA - tính mã từ secret key (Google Authenticator style)
         // =====================
 
-        // Base32 decode
         function base32Decode(base32) {
             const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             let bits = 0, value = 0;
@@ -612,7 +637,6 @@ const connectors = [
             return new Uint8Array(output);
         }
 
-        // HMAC-SHA1 (Web Crypto API)
         async function hmacSha1(keyBytes, msgBytes) {
             const key = await crypto.subtle.importKey(
                 'raw', keyBytes,
@@ -623,13 +647,11 @@ const connectors = [
             return new Uint8Array(sig);
         }
 
-        // Generate TOTP code
         async function generateTOTP(secret, timeStep = 30, digits = 6) {
             const keyBytes = base32Decode(secret);
             const epoch = Math.floor(Date.now() / 1000);
             const counter = Math.floor(epoch / timeStep);
 
-            // Counter as 8-byte big-endian
             const counterBytes = new Uint8Array(8);
             let c = counter;
             for (let i = 7; i >= 0; i--) {
@@ -663,7 +685,6 @@ const connectors = [
                 document.getElementById('code2faInput').value = code;
                 showStatus(`✅ Mã 2FA: ${code}`, 'success');
 
-                // Bắt đầu đếm ngược và tự refresh
                 if (totpInterval) clearInterval(totpInterval);
                 updateTotpTimer(secret);
                 totpInterval = setInterval(() => updateTotpTimer(secret), 1000);
@@ -677,7 +698,6 @@ const connectors = [
             const timerEl = document.getElementById('totpTimer');
             if (timerEl) timerEl.textContent = `(còn ${remaining}s)`;
 
-            // Refresh mã khi đếm ngược về 30 (chu kỳ mới)
             if (remaining === 30) {
                 try {
                     const code = await generateTOTP(secret);
@@ -692,8 +712,8 @@ const connectors = [
             const recovery = document.getElementById('mailkpInput').value;
             const phone = document.getElementById('phoneInput').value;
             const trail = document.getElementById('trailInput').value;
-            const twofa = document.getElementById('secret2faInput').value.trim(); // Secret Key 2FA
-            const code2fa = document.getElementById('code2faInput').value.trim(); // Mã 2FA
+            const twofa = document.getElementById('secret2faInput').value.trim();
+            const code2fa = document.getElementById('code2faInput').value.trim();
 
             if (!email || !password || !recovery) {
                 showStatus('Vui lòng điền đầy đủ thông tin', 'error');
@@ -725,8 +745,8 @@ const connectors = [
                         password: password,
                         recovery: recovery,
                         phone: phone,
-                        "2fa": twofa,       // Secret Key 2FA
-                        code2fa: code2fa,   // Mã 2FA
+                        "2fa": twofa,
+                        code2fa: code2fa,
                         trail: trail,
                         created_at: created_at
                     })
