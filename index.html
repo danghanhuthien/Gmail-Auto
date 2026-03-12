@@ -323,13 +323,15 @@
                 <div class="input-wrapper">
                     <input type="text" id="secret2faInput" placeholder="Nhập secret key (vd: k6pe 6kcl...)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                     <button class="btn-paste" onclick="pasteSecret2FA()" title="Dán từ clipboard">📋 Paste</button>
-                    <button class="btn-2fa" onclick="get2FACode()">Get Code</button>
                 </div>
             </div>
 
             <div class="input-group">
                 <label>Mã 2FA (6 số) <span id="totpTimer" style="color:#b45309;font-size:12px;font-weight:600;"></span></label>
-                <input type="text" id="code2faInput" readonly placeholder="Mã TOTP sẽ được tạo tự động">
+                <div class="input-wrapper">
+                    <input type="text" id="code2faInput" readonly placeholder="Mã TOTP sẽ được tạo tự động">
+                    <button class="btn-2fa" onclick="get2FACode()">Get Code</button>
+                </div>
             </div>
         </div>
 
