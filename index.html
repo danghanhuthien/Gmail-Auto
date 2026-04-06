@@ -576,56 +576,56 @@
             return formats[Math.floor(Math.random() * formats.length)];
         }
 
-        function generateRandomPassword() {
-            const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            const numbers = '0123456789';
-            const specials = '@$%&!#';
-            
-            let password = '';
-            const length = 10 + Math.floor(Math.random() * 5);
-            
-            password += chars.charAt(Math.floor(Math.random() * 26));
-            password += chars.charAt(26 + Math.floor(Math.random() * 26));
-            password += numbers.charAt(Math.floor(Math.random() * numbers.length));
-            password += specials.charAt(Math.floor(Math.random() * specials.length));
-            
-            const allChars = chars + numbers + specials;
-            for (let i = password.length; i < length; i++) {
-                password += allChars.charAt(Math.floor(Math.random() * allChars.length));
-            }
-            
-            password = password.split('').sort(() => Math.random() - 0.5).join('');
-            return password;
-        }
-
         function generatePassword() {
-            const password = generateRandomPassword();
+            const firstName = document.getElementById('firstNameInput').value.trim();
+            const lastName = document.getElementById('lastNameInput').value.trim();
+        
+            if (!firstName || !lastName) {
+                showStatus('⚠️ Vui lòng Generate tên trước rồi mới Generate password', 'error');
+                return;
+            }
+        
+            const password = generateRandomPassword(firstName, lastName);
             document.getElementById('passwordInput').value = password;
             showStatus('✅ Đã tạo password: ' + password, 'success');
         }
-
-        async function getOTP() {
-            showStatus('Đang thuê số điện thoại...', 'info');
-
-            try {
-                const response = await fetch('https://gmailios.vn/api/order-sms/5/xsh9TXWCusAR83zcRptZEuls6ocp9j/viettel', {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    const phoneNumber = result.data.phone_number;
-                    currentOrderId = result.data.id;
-                    document.getElementById('phoneInput').value = phoneNumber;
-                    showStatus(`✅ Đã thuê số: ${phoneNumber}`, 'success');
-                } else {
-                    showStatus('❌ Không thể thuê số điện thoại', 'error');
-                }
-            } catch (error) {
-                showStatus('❌ Lỗi khi thuê số: ' + error.message, 'error');
+        
+        function generateRandomPassword(firstName, lastName) {
+            const specials = '@$%&!#';
+            const numbers = '0123456789';
+        
+            // Lấy một phần từ first/last name
+            const nameParts = [
+                firstName,
+                lastName,
+                firstName + lastName,
+                lastName + firstName,
+                firstName.slice(0, 3) + lastName,
+                firstName + lastName.slice(0, 3),
+            ];
+        
+            const baseName = nameParts[Math.floor(Math.random() * nameParts.length)];
+        
+            // Random số 2–4 chữ số
+            const numLen = 2 + Math.floor(Math.random() * 3);
+            let numStr = '';
+            for (let i = 0; i < numLen; i++) {
+                numStr += numbers.charAt(Math.floor(Math.random() * numbers.length));
             }
+        
+            // 1 ký tự đặc biệt
+            const special = specials.charAt(Math.floor(Math.random() * specials.length));
+        
+            // Ghép lại theo các pattern ngẫu nhiên
+            const patterns = [
+                baseName + numStr + special,
+                baseName + special + numStr,
+                special + baseName + numStr,
+                numStr + baseName + special,
+                baseName.slice(0, 4) + special + numStr + baseName.slice(-3),
+            ];
+        
+            return patterns[Math.floor(Math.random() * patterns.length)];
         }
 
         async function checkSMS() {
